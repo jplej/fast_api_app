@@ -1,0 +1,59 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Virtual environment
+env/
+venv/
+.venv/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Pytest cache
+.pytest_cache/
+
+# FastAPI generated files (e.g., docs cache)
+fastapi-docs/
+
+# Local configuration files
+*.env
+.env.*
+*.local
+
+# Docker files
+*.log
+docker-compose.override.yml
+.dockerignore
+
+# IDE-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# MacOS / Linux system files
+.DS_Store
+*.lock
+*.bak
+*.old
+
+# Editor backups
+*~
