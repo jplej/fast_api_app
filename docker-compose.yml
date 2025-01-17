@@ -8,10 +8,12 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./api/app:/app/app
+      - ./api:/app
     environment:
       - PYTHONUNBUFFERED=1
-      - DATABASE_URL=postgres://postgres:password@db:5432/postgres  # Set DB URL
+      - DATABASE_URL=postgres://postgres:password@db:5432/postgres
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     depends_on:
       - db
 
@@ -27,6 +29,23 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"  # Exposes Redis internally but not to the host
+
+  celery:
+    build:
+      context: ./celery
+      dockerfile: Dockerfile
+    command: celery -A worker worker --loglevel=info
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
 volumes:
   postgres_data:

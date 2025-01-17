@@ -1,6 +1,7 @@
 from fastapi import FastAPI
-from app.db import init_db, close_db
-from app.models import User
+from src.db import init_db, close_db
+from src.models import User
+from src.redis import redis_client
 
 app = FastAPI()
 
@@ -20,3 +21,10 @@ async def read_root():
 async def create_user(name: str, email: str):
     user = await User.create(name=name, email=email)
     return user
+
+@app.get('/redis')
+async def read_redis():
+    redis_client.set('message', 'hellow redis')
+    message = redis_client.get('message')
+    return {'message': message}
+    

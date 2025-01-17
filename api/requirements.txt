@@ -4,3 +4,4 @@ tortoise-orm==0.23.0
 asyncpg==0.30.0
 aerich==0.8.1
 tomlkit==0.13.2
+redis==5.2.1 
