@@ -17,6 +17,7 @@ services:
     depends_on:
       - db
 
+
   db:
     image: postgres:15
     container_name: postgres
@@ -36,14 +37,16 @@ services:
     ports:
       - "6379:6379"  # Exposes Redis internally but not to the host
 
-  celery:
+  worker:
     build:
-      context: ./celery
+      context: ./worker
       dockerfile: Dockerfile
-    command: celery -A worker worker --loglevel=info
+    volumes:
+      - ./worker:/app
     depends_on:
       - redis
     environment:
+      - PYTHONUNBUFFERED=1
       - REDIS_HOST=redis
       - REDIS_PORT=6379
 
