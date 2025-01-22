@@ -1,2 +1,5 @@
 redis==5.2.1 
-celery==5.4.0 
+celery==5.4.0
+yfinance==0.2.52
+openai==1.60.0
+python-dotenv==1.0.1

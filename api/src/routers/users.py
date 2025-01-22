@@ -8,15 +8,13 @@ from passlib.context import CryptContext
 from src.models import Users
 
 router = APIRouter(
-    prefix='/user',
-    tags=['user']
+    prefix='/users',
+    tags=['users']
 )
 
 
 bcrypt_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 user_dependency = Annotated[dict, Depends(get_current_user)]
-
-
 
 class CreateUserRequest(BaseModel):
     email: str
@@ -56,7 +54,7 @@ async def create_user(user_request: CreateUserRequest):
         is_active=True,
     )
     await new_user.save()
-    return {"message": "User created successfully", "user_id": new_user.user_id}
+    return {"message": "User created successfully"}
 
 
 
@@ -64,7 +62,7 @@ async def create_user(user_request: CreateUserRequest):
 async def get_user(user: user_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail='Authentication Failed')
-    user_model = await Users.get(id=user.get('id'))
+    user_model = await Users.get(user_id=user.get('user_id'))
     if not user_model:
         raise HTTPException(status_code=404, detail='User not found')
     return user_model

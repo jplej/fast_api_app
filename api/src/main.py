@@ -1,16 +1,13 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI
 from src.db import init_db, close_db
-from src.redis import redis_client
-from src.celery import celery_client
-from src.routers import auth, users, questrade, health
+from src.routers import auth, users, health, stock 
 
 
 app = FastAPI()
 app.include_router(auth.router)
 app.include_router(users.router)
-app.include_router(questrade.router)
 app.include_router(health.router)
+app.include_router(stock.router)
 
 
 @app.on_event("startup")

@@ -5,8 +5,6 @@ from pydantic import BaseModel
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
-from tortoise.models import Model
-from tortoise import fields
 from tortoise.exceptions import DoesNotExist
 from starlette import status
 from src.models import Users
@@ -38,7 +36,7 @@ async def authenticate_user(username: str, password: str):
         return False
 
 def create_access_token(username: str, user_id: int, role: str, expires_delta: timedelta):
-    encode = {'sub': username, 'id': user_id, 'role': role}
+    encode = {'username': username, 'user_id': user_id, 'role': role}
     expires = datetime.now(timezone.utc) + expires_delta
     encode.update({'exp': expires})
     return jwt.encode(encode, SECRET_KEY, algorithm=ALGORITHM)
@@ -47,27 +45,27 @@ def create_access_token(username: str, user_id: int, role: str, expires_delta: t
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username: str = payload.get('sub')
-        user_id: int = payload.get('id')
+        username: str = payload.get('username')
+        user_id: int = payload.get('user_id')
         user_role: str = payload.get('role')
         if username is None or user_id is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                                 detail='Could not validate user.')
-        return {'username': username, 'id': user_id, 'user_role': user_role}
+        return {'username': username, 'user_id': user_id, 'user_role': user_role}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='Could not validate user.')
 
 
 
-@router.post("/", response_model=Token)
+@router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()]):
     user = await authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='Could not validate user.')
-    token = create_access_token(user.username, user.id, user.role, timedelta(minutes=20))
-
+    token = create_access_token(user.username, user.user_id, user.role, timedelta(minutes=20))
+    print(f'access token generated for: {user.username}, {user.user_id}, {user.role}')
     return {'access_token': token, 'token_type': 'bearer'}
 
 

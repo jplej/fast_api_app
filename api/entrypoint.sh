@@ -48,6 +48,7 @@ if ! check_aerich_table_exists; then
 fi
 
 # Apply migrations
+aerich migrate
 aerich upgrade
 
 # Start the application

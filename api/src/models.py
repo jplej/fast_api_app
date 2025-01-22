@@ -2,7 +2,7 @@ from tortoise.models import Model
 from tortoise import fields
 
 class Users(Model):
-    user_id = fields.IntField(pk=True)
+    user_id = fields.IntField(pk=True, generated=True)
     email = fields.CharField(max_length=255, unique=True)
     username = fields.CharField(max_length=150, unique=True)
     first_name = fields.CharField(max_length=50)
@@ -16,12 +16,20 @@ class Users(Model):
         table = "users"
 
 
-class QuestradeApiKeys(Model):
-    key_id = fields.IntField(pk=True)  # Explicit primary key
-    user_id = fields.ForeignKeyField("models.Users", related_name="questrade_api_keys", on_delete=fields.CASCADE)
-    api_key = fields.CharField(max_length=255)
+class EnrichedStocks(Model):
+    symbol = fields.CharField(pk=True, max_length=10, unique=True)
+    name = fields.CharField(max_length=255, null=True)
+    currency = fields.CharField(max_length=10, null=True)
+    founding_year = fields.IntField(null=True)
+    country = fields.CharField(max_length=100, null=True)
+    founder = fields.CharField(max_length=255, null=True)
+    current_ceo = fields.CharField(max_length=255, null=True)
+    market_cap = fields.CharField(max_length=50, null=True)
+    url_website = fields.CharField(max_length=255, null=True)
+    description = fields.TextField(null=True)
+    industry = fields.CharField(max_length=100, null=True)
     created_at = fields.DatetimeField(auto_now_add=True)
     updated_at = fields.DatetimeField(auto_now=True)
 
     class Meta:
-        table = "questrade_api_keys"
+        table = "enriched_stocks"

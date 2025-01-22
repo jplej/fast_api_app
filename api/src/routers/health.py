@@ -1,9 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from src.db import init_db, close_db
 from src.redis import redis_client
 from src.celery import celery_client
-from src.routers import auth, users, questrade
 
 router = APIRouter(
     prefix='/health',
