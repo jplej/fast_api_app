@@ -42,8 +42,8 @@ async def create_stock_entry(symbol: str):
     raise HTTPException(status_code=408, detail="Task timed out")
 
 
-@router.get("/{symbol}")
-async def get_stock_entry(symbol: str):
+@router.get("/")
+async def get_stock_entry():
     stocks = await EnrichedStocks.all()
     return stocks
 
